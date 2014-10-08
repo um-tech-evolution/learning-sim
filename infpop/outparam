@@ -1,0 +1,16 @@
+
+	def outParams():
+		delta = Params.delta
+		gamma = Params.gamma
+		W0 = Params.W0
+		n = Params.n
+		D = Params.D
+		Cl = Params.Cl
+		Cs = Params.Cs
+		K = Params.K
+		EQ1 = (1.0-(1.0-delta)**n)*(1.0-gamma)*(D*(1.0-gamma)+Cl-Cs)-K
+		EQ2 = (delta*(1.0-gamma)*(D*(1.0-delta)+Cl-Cs))/(gamma+(1-gamma)*delta) - K
+		result = 'W0'+tb+'K'+tb+'D'+tb+'delta'+tb+'gamma'+tb+'Cl'+tb+'Cs'+tb+'n'+tb+'EQ1'+tb+'EQ2'+'\n'
+		result += str(W0)+tb+str(K)+tb+str(D)+tb+str(delta)+tb+str(gamma)+tb+str(Cl)+tb+str(Cs)
+		result += tb+str(n)+tb+str('%0.2f'%EQ1)+tb+str('%0.2f'%EQ2)
+		return result

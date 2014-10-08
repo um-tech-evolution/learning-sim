@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{listings}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1ex}
+\textwidth=15.7cm
+\textheight=22.9cm
+\voffset=-2.54cm
+\hoffset=-2.7cm
+
+\begin{document}
+Description of the ``infinite population'' version of the discrete model of the 
+``Cultural evolution is rare'' paper of Boyd Richerson (1996).
+
+Model parameters:
+
+$W_0 = $ base fitness \\
+$\delta = $ probability of individual learner (IL) learning skill\\
+$C_\ell = $ fitness cost of any individual attempting to learn skill individually\\
+$C_s = $ fitness costs of social learner (SL) learning skill (no penalty for attempt)\\
+$K = $ fitness penalty for being a social learner\\
+$D = $ fitness bonus for knowing skill\\
+$n = $ number of previous generation individuals observed by SL\\
+$\gamma = $ per generation probability of environment change\\
+
+Simulation parameters:
+
+$G = $ number of generations\\
+
+Derived quantities:
+
+$p = $ probability of a previous generation SL being skilled\\
+$q = $ probability of a previous generation individual being skilled\\
+$1-(1-q)^n = $ probability of SL learning skill assuming no environment change\\
+$W_\ell = W_0 + \delta D - C_\ell = $ expected fitness of IL \\
+$W_s = \gamma(W_0+\delta D - C_\ell) + (1-\gamma)(W_0+\pi(D-C_s)+(1-\pi)(\delta D-C_\ell))
+ = $ expected fitness of SL \\
+
+Infinite population model assuming no environment change:
+
+Keep track of:  
+
+$s_t = $ frequency of social learners in generation $t$\\
+$q_t = $ frequency of skilled individuals in generation $t$\\
+
+Note:  Frequency means relative frequency (out of a total of 1.0).
+Thus, $1-s_t = $ frequency of individual learners.
+
+Top-level algorithm:
+
+\begin{tabbing}
+hhh\=hhh\=hhh\=hhh\=hhh\kill
+\textsc{ BoydRichersonInfPop}($G$,$s_1$)\\
+\>for $t$ from 1 to $G$:\\
+\>\>learning: produces freq of skilled individual learners and skilled social learners\\
+\>\>proportional selection: produces $s_{t+1}$\\
+\end{tabbing}
+
+
+%\clearpage
+Outcomes of learning and their fitnesses:
+
+\begin{tabular}{|l|l|l|}
+\hline
+Outcome & Probability & Fitness\\
+\hline
+IL unskilled & $ (1-s_t)(1-\delta) $ & $W_0 - C_\ell$\\
+IL skilled & $ (1-s_t)\delta $ & $W_0 + D - C_\ell$\\
+SL social learned skilled & $s_t p_t$ & $W_0 + D - C_s - K$\\
+SL indiv learned skilled & $s_t (1-p_t)\delta$ & $W_0 + D - C_\ell - K$\\
+SL unskilled & $s_t (1-p_t)(1-\delta)$ & $W_0 - C_\ell - K$\\
+\hline
+\end{tabular}
+
+where
+$p_t = 1-(1-q_{t-1})^n = $ probability of an SL individual learning skill in generation $t$
+
+We can calculate $q_t$ by:\\
+$q_t = (1-s_t)\delta + s_t( p_t + (1-p_t)\delta) = \delta + s_t p_t (1-\delta)$\\
+\hspace{0.2in} = probability of an individual being skilled in generation $t$\\
+
+
+\begin{tabbing}
+hhh\=hhh\=hhh\=hhh\=hhh\kill
+\textsc{ BoydRichersonInfPop}($G$,$s_1$)\\
+\>$q_0 \leftarrow 0$\\
+\>for $t$ from 1 to $G$:\\
+\>\> $p_t \leftarrow 1-(1-q_{t-1})^n$\\ 
+\>\> $q_t \leftarrow \delta + s_t p_t (1-\delta)$\\
+\>\> $indiv \leftarrow (1-s_t)(1-\delta)(W_0-C_\ell) +(1-s_t)\delta (W_0 + D - C_\ell)$\\
+\>\> $social \leftarrow s_t p_t (W_0 + D - C_s - K) +s_t (1-p_t)\delta (W_0 + D - C_\ell - K) 
+      +s_t (1-p_t)(1-\delta)(W_0-C_\ell-K)$\\
+\>\> $total \leftarrow indiv + social$ \\
+\>\> $s_{t+1} = social/total$\\
+\end{tabbing}
+
+
+\end{document}
